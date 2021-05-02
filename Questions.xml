@@ -1,0 +1,24 @@
+<?xml version='1.0' ?>
+
+<Questionnaire>
+	<QA id="1">
+		<Question>What are your company’s strengths / weaknesses?</Question>
+		<Response></Response>
+    </QA>
+	<QA id="2">
+		<Question>What is your view of how your industry is evolving?</Question>
+		<Response></Response>
+    </QA>
+	<QA id="3">
+		<Question>What are the key activities (Jobs-to-be-done) for your department?</Question>
+		<Response></Response>
+    </QA>
+	<QA id="4">
+		<Question>What are the biggest challenges you are facing?</Question>
+		<Response></Response>
+    </QA>
+	<QA id ="5">
+		<Question>What are your company's opportunities/threats?</Question>
+		<Response></Response>
+	</QA>
+</Questionnaire>

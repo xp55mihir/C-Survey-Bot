@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' ?>
+
+<AnswerChoicesSets>
+	<ACS>
+		<AC>Employee-to-Employee Communication</AC>
+		<AC>Effective chain of command</AC>
+		<AC>Many potential clients</AC>
+		<AC>Other Strengths/Weaknesses</AC>
+	</ACS>
+	<ACS>
+		<AC>Serving twice as many clients as one year ago</AC>
+		<AC>Serving twice as many clients as three years ago</AC>
+		<AC>Documents used have shifted from primarily paper documents to primarily electronic documents.</AC>
+		<AC>Other Form of Evolution</AC>
+	</ACS>
+	<ACS>
+		<AC>Mostly administrative</AC>
+		<AC>Mostly software-based</AC>
+		<AC>A mix of administrative and software-based</AC>
+		<AC>Other Key Activities</AC>
+	</ACS>
+	<ACS>
+		<AC>Attracting more clients</AC>
+		<AC>Maintaining strong business relationships with our current clients</AC>
+		<AC>Monetary costs of advancing software-based practices</AC>
+		<AC>Other Big Challenges</AC>
+	</ACS>
+	<ACS>
+		<AC>Offers from other clients</AC>
+		<AC>Other opportunities/threats</AC>
+	</ACS>
+</AnswerChoicesSets>
