@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Providers.Entities;
 using System.Xml;
+using ToDoBot.Dialogs.Operations;
 
 
 
@@ -31,14 +32,14 @@ namespace ToDoBot.Dialogs
 
         List<string> questions = new List<string>();
         List<string> choices = new List<string>();
-        List<List<string>> ListOfChocies = new List<List<string>>();
-        List<string> responses = new List<string>();
+        public static List<List<string>> ListOfChocies = new List<List<string>>();
+        public static List<string> responses = new List<string>();
         int XMLrunner = 0;
         int XCR = 0;
         int intro = 0;
-        int i = 0;
-        string response = "xxx";
-        private object userDetails;
+        public static int i = 0;
+        public static string response = "xxx";
+        
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(ToDoLUISRecognizer luisRecognizer, ILogger<MainDialog> logger)
@@ -49,13 +50,15 @@ namespace ToDoBot.Dialogs
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
+            //AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
+            AddDialog(new OtherResponseDialog());
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 ExtractDataStepAsync,
                 IntroStepAsync,
                 AskStepAsync,
                 ActStepAsync,
-                OtherResponseStepAsync,
+                CheckQuestionNumberStepAsync,
                 FinalStepAsync,
             })); ;
 
@@ -67,7 +70,7 @@ namespace ToDoBot.Dialogs
         {
             if (XMLrunner == 0)
             {
-                XmlTextReader xtr = new XmlTextReader(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-3\SurveyBotTrial-3\Questions.xml");
+                XmlTextReader xtr = new XmlTextReader(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-5 [Working version]\SurveyBotTrial-5\Questions.xml");
                 while (xtr.Read())
                 {
                     if (xtr.NodeType == XmlNodeType.Element && xtr.Name == "Question")
@@ -81,7 +84,7 @@ namespace ToDoBot.Dialogs
 
             if (XCR == 0)
             {
-                XmlTextReader xtr = new XmlTextReader(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-3\SurveyBotTrial-3\AnswerChoices.xml");
+                XmlTextReader xtr = new XmlTextReader(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-5 [Working version]\SurveyBotTrial-5\AnswerChoices.xml");
                 int a = 0;
                 while (xtr.Read())
                 {
@@ -185,39 +188,22 @@ namespace ToDoBot.Dialogs
 
             if (response == ListOfChocies[i][ListOfChocies[i].Count() - 1])
             {
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
-                {
-                    Prompt = MessageFactory.Text("Please type and send " + ListOfChocies[i][ListOfChocies[i].Count() - 1])
-                }, cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(OtherResponseDialog), new User(), cancellationToken);
             }
             else
             {
                 responses.Add(response);
                 i++;
-            }
-            
-
-            if (i == questions.Count())
-            {
                 return await stepContext.NextAsync(null, cancellationToken);
             }
-            else
-            {
-                return await stepContext.ReplaceDialogAsync(InitialDialogId, userDetails, cancellationToken);
-            }
+
+
+            
         }
 
-        private async Task<DialogTurnResult> OtherResponseStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> CheckQuestionNumberStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (response == ListOfChocies[i][ListOfChocies[i].Count() - 1])
-            {
-                var userDetails = (User)stepContext.Options;
-                stepContext.Values["Response"] = (string)stepContext.Result;
-                response = (string)stepContext.Values["Response"];
-                responses.Add(response);
-                i++;
-            }
-            
+            var userDetails = (User)stepContext.Options;
             if (i == questions.Count())
             {
                 return await stepContext.NextAsync(null, cancellationToken);
@@ -234,7 +220,7 @@ namespace ToDoBot.Dialogs
             MessageFactory.Text("You have reached the end of this survey. Thank you for your time."), cancellationToken);
 
             XmlDocument Xdoc = new XmlDocument();
-            Xdoc.Load(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-3\SurveyBotTrial-3\QuestionsAnswers.xml");
+            Xdoc.Load(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-5 [Working version]\SurveyBotTrial-5\QuestionsAnswers.xml");
 
             for (int m = 0; m < questions.Count(); m++)
             {
@@ -243,9 +229,9 @@ namespace ToDoBot.Dialogs
                 tgtNode.InnerText = responses[m];
             }
 
-            Xdoc.Save(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-3\SurveyBotTrial-3\QuestionsAnswers.xml");
+            Xdoc.Save(@"C:\Users\Mihir\Desktop\Robonomics Internship\Robonomics AI Project\Project-related Proof-Of-Concept\P.O.C.-5 [Working version]\SurveyBotTrial-5\QuestionsAnswers.xml");
 
-            return null;
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken); 
         }
     }
 }
